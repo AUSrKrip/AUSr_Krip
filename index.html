@@ -14,15 +14,16 @@
 
     /* Body Styles */
     body {
-  font-family: 'Avenir Next LT Pro', sans-serif;
-  background-image: url('https://i.imgur.com/AuoKZKw.png');
-  background-size: cover; /* Cover the whole background */
-  background-position: center; /* Center the background image */
-  background-attachment: fixed; /* Keep the background image fixed while scrolling */
-  color: #00ff00; /* Fluorescent green text color */
-  line-height: 1.6;
-  overflow-x: hidden;
-}
+      font-family: 'Avenir Next LT Pro', sans-serif;
+      background-image: url('https://i.imgur.com/AuoKZKw.png');
+      background-size: cover; /* Cover the whole background */
+      background-position: center; /* Center the background image */
+      background-attachment: fixed; /* Keep the background image fixed while scrolling */
+      color: #00ff00; /* Fluorescent green text color */
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative; /* Ensure the body is positioned relatively */
+    }
 
     /* Header Styles */
     header {
@@ -72,7 +73,7 @@
 
     /* Side Images Styles */
     .side-image {
-      position: absolute;
+      position: fixed; /* Fixed positioning */
       top: 0;
       bottom: 0;
       width: 350px; /* Adjust width as needed */
