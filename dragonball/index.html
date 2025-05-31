@@ -18,23 +18,24 @@
     #title {
       position: absolute;
       bottom: 40px;
-      left: 60px;
-      font-size: 2.8em;
+      left: 250px;
+      font-size: 4.0em;
       color: orange;
       text-shadow: 4px 4px 0 blue, -2px -2px 0 #000;
     }
 
     #game-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center; /* Vertically center image and text */
+      z-index: 1000;
     }
 
     #silhouette {
-      width: 400px;
-      height: auto;
+      width: auto;
+      height: 320px;
       display: block;
     }
 
