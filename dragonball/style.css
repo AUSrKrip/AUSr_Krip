@@ -11,7 +11,7 @@ body {
 
 #silhouette {
   width: 400px;
-  filter: brightness(0) contrast(1.2);
+ /* filter: brightness(0) contrast(1.2); */
 }
 
 #answer {
