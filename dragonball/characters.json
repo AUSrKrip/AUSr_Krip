@@ -1,0 +1,12 @@
+[
+  {
+    "name": "goku",
+    "image": "images/goku.png",
+    "silhouette": "silhouettes/goku.png"
+  },
+  {
+    "name": "vegeta",
+    "image": "images/vegeta.png",
+    "silhouette": "silhouettes/vegeta.png"
+  }
+]

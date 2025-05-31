@@ -1,0 +1,28 @@
+body {
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+#game-container {
+  margin-top: 50px;
+}
+
+#silhouette {
+  width: 400px;
+  filter: brightness(0) contrast(1.2);
+}
+
+#answer {
+  margin-top: 20px;
+}
+
+#reveal {
+  width: 400px;
+}
+
+#name {
+  font-size: 2em;
+  color: yellow;
+}
