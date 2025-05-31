@@ -1,16 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Who's That Dragon Ball</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.cdnfonts.com/css/saiyan-sans" rel="stylesheet">
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      text-align: center;
+      font-family: 'Saiyan Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    #game-container {
+      margin-top: 50px;
+    }
+
+    #silhouette {
+      width: 400px;
+      filter: brightness(0) contrast(1.2);
+    }
+
+    #answer {
+      margin-top: 20px;
+    }
+
+    #reveal {
+      width: 400px;
+    }
+
+    #name {
+      font-size: 2em;
+      color: yellow;
+    }
+
+    h1 {
+      color: orange;
+      font-size: 2.5em;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
+  <h1>Who's That Dragon Ball?</h1>
+
   <div id="game-container">
     <img id="silhouette" src="" alt="Who's That Character?" />
     <div id="answer" hidden>
       <img id="reveal" src="" />
-      <h1 id="name"></h1>
+      <h2 id="name"></h2>
     </div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
