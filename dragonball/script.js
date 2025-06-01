@@ -8,6 +8,9 @@ async function startGame() {
 
     currentCharacter = characters[Math.floor(Math.random() * characters.length)];
 
+    console.log("🎯 Selected:", currentCharacter.name);
+    console.log("🟢 Silhouette URL:", currentCharacter.silhouette);
+
     document.getElementById("silhouette").src = currentCharacter.silhouette;
     document.getElementById("reveal").src = currentCharacter.image;
     document.getElementById("name").textContent = currentCharacter.name;
