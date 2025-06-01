@@ -51,6 +51,7 @@ socket.onopen = function () {
 
 socket.onmessage = function (event) {
   try {
+    console.log("📨 Message from StreamerBot:", event.data);
     const data = JSON.parse(event.data);
 
     if (data.action === "startDragonball") {
