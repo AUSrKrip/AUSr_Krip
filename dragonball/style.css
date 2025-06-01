@@ -1,17 +1,39 @@
 body {
   background-color: black;
-  color: white;
-  font-family: sans-serif;
-  text-align: center;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Saiyan Sans', sans-serif;
 }
 
 #game-container {
-  margin-top: 50px;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
 }
 
 #silhouette {
-  width: 400px;
- /* filter: brightness(0) contrast(1.2); */
+  height: 320px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 0 15px limegreen);
+}
+
+.info-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 30px;
+}
+
+#title {
+  font-size: 3.5em;
+  color: orange;
+  text-shadow: 4px 4px 0 blue, -2px -2px 0 #000;
+  animation: pulse 2s infinite;
 }
 
 #answer {
@@ -25,4 +47,12 @@ body {
 #name {
   font-size: 2em;
   color: yellow;
+  text-shadow: 2px 2px 4px black;
+}
+
+/* Optional animated glow for DBZ style */
+@keyframes pulse {
+  0%   { text-shadow: 4px 4px 0 blue, 0 0 5px yellow; }
+  50%  { text-shadow: 4px 4px 0 blue, 0 0 20px red; }
+  100% { text-shadow: 4px 4px 0 blue, 0 0 5px yellow; }
 }
