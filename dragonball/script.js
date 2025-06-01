@@ -6,16 +6,16 @@ async function startGame() {
     const response = await fetch('characters.json');
     const characters = await response.json();
 
-    // Pick a random character
     currentCharacter = characters[Math.floor(Math.random() * characters.length)];
 
-    // Update overlay with silhouette
     document.getElementById("silhouette").src = currentCharacter.silhouette;
     document.getElementById("reveal").src = currentCharacter.image;
     document.getElementById("name").textContent = currentCharacter.name;
     document.getElementById("answer").hidden = true;
 
-    // Send selected character name to StreamerBot
+    console.log("Selected character:", currentCharacter.name);
+    console.log("Silhouette URL:", currentCharacter.silhouette);
+
     if (socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify({
         action: "setCharacter",
@@ -39,7 +39,7 @@ function revealAnswer() {
   document.getElementById("answer").hidden = false;
 }
 
-// Set up WebSocket to StreamerBot
+// WebSocket to StreamerBot
 const socket = new WebSocket("ws://localhost:8080");
 
 socket.onopen = function () {
@@ -50,19 +50,16 @@ socket.onmessage = function (event) {
   try {
     const data = JSON.parse(event.data);
 
-    // Start round when StreamerBot sends { action: "startDragonball" }
     if (data.action === "startDragonball") {
+      console.log("🔥 Received startDragonball command");
       startGame();
     }
 
-    // Reveal answer when StreamerBot sends { action: "revealDragonball" }
     if (data.action === "revealDragonball") {
+      console.log("🎉 Revealing character");
       revealAnswer();
     }
   } catch (err) {
     console.error("WebSocket message error:", err);
   }
 };
-
-// Optional: auto-start for testing in browser
-// window.addEventListener('DOMContentLoaded', startGame);
