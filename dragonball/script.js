@@ -43,13 +43,14 @@ async function startGame() {
     console.log("🎯 Selected:", currentCharacter.name);
     console.log("🟢 Silhouette URL:", currentCharacter.silhouette);
 
-    // Tell StreamerBot what the character is
+    // Send the character name back to StreamerBot
     socket.send(JSON.stringify({
       action: "setCharacter",
       name: currentCharacter.name
     }));
+
   } catch (err) {
-    console.error("❌ Failed to load character list:", err);
+    console.error("❌ Failed to load characters.json:", err);
   }
 }
 
