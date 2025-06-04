@@ -43,11 +43,14 @@ async function startGame() {
     console.log("🎯 Selected:", currentCharacter.name);
     console.log("🟢 Silhouette URL:", currentCharacter.silhouette);
 
-    // Send the character name back to StreamerBot
+    // ❌ Commented out: causes "malformed command" if no WebSocket trigger is set
+    // ✅ Enable this if you've added a WebSocket trigger in StreamerBot for action == setCharacter
+    /*
     socket.send(JSON.stringify({
       action: "setCharacter",
       name: currentCharacter.name
     }));
+    */
 
   } catch (err) {
     console.error("❌ Failed to load characters.json:", err);
