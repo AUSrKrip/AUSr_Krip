@@ -50,14 +50,14 @@ socket.onopen = function () {
 };
 
 socket.onmessage = function (event) {
-  try {
-    console.log("📨 Message from StreamerBot:", event.data);
-    const data = JSON.parse(event.data);
+  console.log("📨 Message from StreamerBot:", event.data);
 
-    if (data.action === "startDragonball") {
-      console.log("🔥 Received startDragonball command");
-      startGame();
-    }
+  const data = JSON.parse(event.data);
+
+  if (data.action === "startDragonball") {
+    console.log("🔥 Received startDragonball command");
+    startGame();
+  }
 
     if (data.action === "revealDragonball") {
       console.log("🎉 Revealing character");
