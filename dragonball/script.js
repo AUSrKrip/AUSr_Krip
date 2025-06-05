@@ -1,32 +1,5 @@
 let currentCharacter = null;
 
-// Connect to StreamerBot WebSocket
-const socket = new WebSocket("ws://localhost:8080");
-
-socket.onopen = function () {
-  console.log("[WebSocket] Connected to StreamerBot");
-};
-
-socket.onmessage = function (event) {
-  console.log("📨 Message from StreamerBot:", event.data);
-
-  try {
-    const data = JSON.parse(event.data);
-
-    if (data.action === "startDragonball") {
-      console.log("🔥 Received startDragonball command");
-      startGame();
-    }
-
-    if (data.action === "revealDragonball") {
-      console.log("🎉 Revealing character");
-      revealAnswer();
-    }
-  } catch (err) {
-    console.error("❌ WebSocket message error:", err);
-  }
-};
-
 // Start a new game round
 async function startGame() {
   try {
@@ -43,15 +16,6 @@ async function startGame() {
     console.log("🎯 Selected:", currentCharacter.name);
     console.log("🟢 Silhouette URL:", currentCharacter.silhouette);
 
-    // ❌ Commented out: causes "malformed command" if no WebSocket trigger is set
-    // ✅ Enable this if you've added a WebSocket trigger in StreamerBot for action == setCharacter
-    /*
-    socket.send(JSON.stringify({
-      action: "setCharacter",
-      name: currentCharacter.name
-    }));
-    */
-
   } catch (err) {
     console.error("❌ Failed to load characters.json:", err);
   }
@@ -61,3 +25,8 @@ async function startGame() {
 function revealAnswer() {
   document.getElementById("answer").hidden = false;
 }
+
+// ✅ Auto-start game when overlay loads
+window.onload = () => {
+  startGame();
+};
