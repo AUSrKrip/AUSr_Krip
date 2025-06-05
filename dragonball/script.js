@@ -16,17 +16,21 @@ async function startGame() {
     console.log("🎯 Selected:", currentCharacter.name);
     console.log("🟢 Silhouette URL:", currentCharacter.silhouette);
 
+    // Optional: display name in console only (not reveal)
   } catch (err) {
     console.error("❌ Failed to load characters.json:", err);
   }
 }
 
-// Reveal the character
+// Reveal the character visually
 function revealAnswer() {
   document.getElementById("answer").hidden = false;
 }
 
-// ✅ Auto-start game when overlay loads
+// ✅ Allow StreamerBot or manual trigger to call revealAnswer()
+window.revealAnswer = revealAnswer;
+
+// ✅ Start the game automatically when overlay loads
 window.onload = () => {
   startGame();
 };
