@@ -6,10 +6,11 @@
     <title>AUSr_Krip</title>
     <link rel="stylesheet" href="assets/css/main.css" />
     <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <!-- Twitch Embed JS -->
+    <script src="https://player.twitch.tv/js/embed/v1.js"></script>
     <style>
-        /* Center clip player and header reveal styling */
+        /* Center clip player */
         .clip-wrapper { display: flex; justify-content: center; margin: 2rem 0; }
-        #twitchPlayer { width: 320px; height: 180px; border: 0; }
     </style>
 </head>
 <body class="is-preload">
@@ -41,17 +42,7 @@
             <!-- Twitch Clips Section -->
             <section id="twitch-clips">
                 <h2 style="text-align:center;">Featured Twitch Clips</h2>
-                <div class="clip-wrapper">
-                    <iframe
-                        id="twitchPlayer"
-                        src="https://clips.twitch.tv/embed?clip=AmorphousAuspiciousBobaSwiftRage--MnKyZCm3tgzaRIz&parent=onlybeards.vip&autoplay=true&muted=true"
-                        width="320" height="180"
-                        frameborder="0"
-                        allow="autoplay; fullscreen"
-                        allowfullscreen
-                        title="Featured Twitch Clip">
-                    </iframe>
-                </div>
+                <div id="twitch-clip-container" class="clip-wrapper"></div>
             </section>
 
         </div>
@@ -59,7 +50,7 @@
 
     <!-- Scripts -->
     <script>
-        // On load: remove preload, reveal header, disable touch scroll, reset orientation scroll
+        // Initial page setup
         window.addEventListener('load', () => {
             document.body.classList.remove('is-preload');
             const header = document.getElementById('header');
@@ -70,7 +61,7 @@
         window.ontouchmove = () => false;
         window.onorientationchange = () => { document.body.scrollTop = 0; };
 
-        // Twitch clip cycling
+        // Clip list and durations
         const clips = [
             'AmorphousAuspiciousBobaSwiftRage--MnKyZCm3tgzaRIz',
             'BetterPhilanthropicPlumBibleThump-w0OeOeYxo28j4I3g',
@@ -79,18 +70,36 @@
             'FreezingOutstandingStrawberryPastaThat-h4YHJ6OjupMREqXy',
             'RacyAverageCarabeefOpieOP-RLnPc9CjVTitwDbd'
         ];
-        const clipDurations = [6,30,30,13,24,30];
-        let current = 0;
-        const player = document.getElementById('twitchPlayer');
+        const durations = [6, 30, 30, 13, 24, 30];
+        let idx = 0;
 
-        function startClipCycle() {
-            setTimeout(() => {
-                current = (current + 1) % clips.length;
-                player.src = `https://clips.twitch.tv/embed?clip=${clips[current]}&parent=onlybeards.vip&autoplay=true&muted=true`;
-                startClipCycle();
-            }, clipDurations[current] * 1000);
+        // Render a clip using Twitch Embed API
+        function renderClip(slug) {
+            // Clear container
+            const container = document.getElementById('twitch-clip-container');
+            container.innerHTML = '';
+            // Create new embed
+            new Twitch.Embed('twitch-clip-container', {
+                width: 320,
+                height: 180,
+                clip: slug,
+                autoplay: true,
+                muted: true,
+                parent: ['onlybeards.vip']
+            });
         }
-        startClipCycle();
+
+        // Cycle through clips
+        function cycleClips() {
+            renderClip(clips[idx]);
+            setTimeout(() => {
+                idx = (idx + 1) % clips.length;
+                cycleClips();
+            }, durations[idx] * 1000);
+        }
+
+        // Start cycling after initial load
+        cycleClips();
     </script>
 </body>
 </html>
