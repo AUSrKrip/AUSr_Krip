@@ -11,6 +11,7 @@
     <style>
         /* Center clip player */
         .clip-wrapper { display: flex; justify-content: center; margin: 2rem 0; }
+        #twitch-clip-container { width: 320px; height: 180px; }
     </style>
 </head>
 <body class="is-preload">
@@ -24,25 +25,26 @@
                 <img src="https://i.imgur.com/Mny9wDW.png" alt="Header Image" />
                 <p>&bull; Aussie Riders &bull;</p>
                 <nav>
-                    <div class="container">
-                        <ul>
-                            <li><a href="https://www.twitch.tv/ausr_krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/Xu4PP5q.png" alt="Twitch" /></a></li>
-                            <li><a href="https://www.youtube.com/@ausr_krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/p2mZqn2.png" alt="YouTube" /></a></li>
-                            <li><a href="https://kick.com/ausr-krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/lGkqaiQ.png" alt="Kick" /></a></li>
-                            <li><a href="https://discord.gg/QUkEEvb" target="_blank" rel="noopener"><img src="https://i.imgur.com/I9SnGIm.png" alt="Discord" /></a></li>
-                            <li><a href="https://twitter.com/AUSr_Krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/WBk7pdm.png" alt="Twitter" /></a></li>
-                            <li><a href="https://www.instagram.com/ausr_krip/" target="_blank" rel="noopener"><img src="https://i.imgur.com/CFN2e4a.png" alt="Instagram" /></a></li>
-                            <li><a href="https://www.tiktok.com/@ausr.krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/ClWjLFy.png" alt="TikTok" /></a></li>
-                            <li><a href="https://streamlabs.com/ausr_krip/tip" target="_blank" rel="noopener"><img src="https://i.imgur.com/PIHZ6pt.png" alt="Donate" /></a></li>
-                        </ul>
-                    </div>
+                  <div class="container">
+                    <ul>
+                      <li><a href="https://www.twitch.tv/ausr_krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/Xu4PP5q.png" alt="Twitch" /></a></li>
+                      <li><a href="https://www.youtube.com/@ausr_krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/p2mZqn2.png" alt="YouTube" /></a></li>
+                      <li><a href="https://kick.com/ausr-krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/lGkqaiQ.png" alt="Kick" /></a></li>
+                      <li><a href="https://discord.gg/QUkEEvb" target="_blank" rel="noopener"><img src="https://i.imgur.com/I9SnGIm.png" alt="Discord" /></a></li>
+                      <li><a href="https://twitter.com/AUSr_Krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/WBk7pdm.png" alt="Twitter" /></a></li>
+                      <li><a href="https://www.instagram.com/ausr_krip/" target="_blank" rel="noopener"><img src="https://i.imgur.com/CFN2e4a.png" alt="Instagram" /></a></li>
+                      <li><a href="https://www.tiktok.com/@ausr.krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/ClWjLFy.png" alt="TikTok" /></a></li>
+                      <li><a href="https://streamlabs.com/ausr_krip/tip" target="_blank" rel="noopener"><img src="https://i.imgur.com/PIHZ6pt.png" alt="Donate" /></a></li>
+                    </ul>
+                  </div>
                 </nav>
             </header>
 
             <!-- Twitch Clips Section -->
             <section id="twitch-clips">
-                <h2 style="text-align:center;">Featured Twitch Clips</h2>
-                <div id="twitch-clip-container" class="clip-wrapper"></div>
+                <div class="clip-wrapper">
+                    <div id="twitch-clip-container"></div>
+                </div>
             </section>
 
         </div>
@@ -50,7 +52,7 @@
 
     <!-- Scripts -->
     <script>
-        // Initial page setup
+        // Page init: remove preload and reveal header
         window.addEventListener('load', () => {
             document.body.classList.remove('is-preload');
             const header = document.getElementById('header');
@@ -61,7 +63,7 @@
         window.ontouchmove = () => false;
         window.onorientationchange = () => { document.body.scrollTop = 0; };
 
-        // Clip list and durations
+        // Clips and durations
         const clips = [
             'AmorphousAuspiciousBobaSwiftRage--MnKyZCm3tgzaRIz',
             'BetterPhilanthropicPlumBibleThump-w0OeOeYxo28j4I3g',
@@ -73,12 +75,10 @@
         const durations = [6, 30, 30, 13, 24, 30];
         let idx = 0;
 
-        // Render a clip using Twitch Embed API
+        // Render clip
         function renderClip(slug) {
-            // Clear container
             const container = document.getElementById('twitch-clip-container');
             container.innerHTML = '';
-            // Create new embed
             new Twitch.Embed('twitch-clip-container', {
                 width: 320,
                 height: 180,
@@ -97,8 +97,6 @@
                 cycleClips();
             }, durations[idx] * 1000);
         }
-
-        // Start cycling after initial load
         cycleClips();
     </script>
 </body>
