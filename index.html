@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="assets/css/main.css" />
     <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
     <style>
-        /* Center clip player */
+        /* Center clip player and header reveal styling */
         .clip-wrapper { display: flex; justify-content: center; margin: 2rem 0; }
         #twitchPlayer { width: 320px; height: 180px; border: 0; }
     </style>
@@ -49,7 +49,7 @@
                         frameborder="0"
                         allow="autoplay; fullscreen"
                         allowfullscreen
-                        title="Twitch Clip">
+                        title="Featured Twitch Clip">
                     </iframe>
                 </div>
             </section>
@@ -72,30 +72,24 @@
 
         // Twitch clip cycling
         const clips = [
-            "AmorphousAuspiciousBobaSwiftRage--MnKyZCm3tgzaRIz",
-            "BetterPhilanthropicPlumBibleThump-w0OeOeYxo28j4I3g",
-            "HomelyFitCrabsFloof-IINFByBoR5T5H28C",
-            "VenomousSullenWebDancingBaby-synaD3SGD0TzsGXE",
-            "FreezingOutstandingStrawberryPastaThat-h4YHJ6OjupMREqXy",
-            "RacyAverageCarabeefOpieOP-RLnPc9CjVTitwDbd"
+            'AmorphousAuspiciousBobaSwiftRage--MnKyZCm3tgzaRIz',
+            'BetterPhilanthropicPlumBibleThump-w0OeOeYxo28j4I3g',
+            'HomelyFitCrabsFloof-IINFByBoR5T5H28C',
+            'VenomousSullenWebDancingBaby-synaD3SGD0TzsGXE',
+            'FreezingOutstandingStrawberryPastaThat-h4YHJ6OjupMREqXy',
+            'RacyAverageCarabeefOpieOP-RLnPc9CjVTitwDbd'
         ];
-        const clipDurations = [6, 30, 30, 13, 24, 30];
+        const clipDurations = [6,30,30,13,24,30];
         let current = 0;
         const player = document.getElementById('twitchPlayer');
 
-        function loadNextClip() {
-            current = (current + 1) % clips.length;
-            player.src = `https://clips.twitch.tv/embed?clip=${clips[current]}&parent=onlybeards.vip&autoplay=true&muted=true`;
-        }
-
         function startClipCycle() {
             setTimeout(() => {
-                loadNextClip();
+                current = (current + 1) % clips.length;
+                player.src = `https://clips.twitch.tv/embed?clip=${clips[current]}&parent=onlybeards.vip&autoplay=true&muted=true`;
                 startClipCycle();
             }, clipDurations[current] * 1000);
         }
-
-        // Kick off the cycle
         startClipCycle();
     </script>
 </body>
