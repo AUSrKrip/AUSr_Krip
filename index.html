@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <title>AUSr_Krip</title>
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <link rel="stylesheet" href="assets/css/main.css"/>
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css"/></noscript>
     <!-- Twitch Embed JS -->
-    <script src="https://player.twitch.tv/js/embed/v1.js"></script>
+    <script src="https://player.twitch.tv/js/embed/v1.js" defer></script>
     <style>
         /* Center clip player */
         .clip-wrapper { display: flex; justify-content: center; margin: 2rem 0; }
@@ -21,20 +21,20 @@
         <div id="main">
 
             <!-- Header -->
-            <header id="header">
-                <img src="https://i.imgur.com/Mny9wDW.png" alt="Header Image" />
+            <header id="header" style="opacity:0; transform: translateY(-10px); transition: opacity .3s, transform .3s;">
+                <img src="https://i.imgur.com/Mny9wDW.png" alt="Header Image"/>
                 <p>&bull; Aussie Riders &bull;</p>
                 <nav>
                   <div class="container">
                     <ul>
-                      <li><a href="https://www.twitch.tv/ausr_krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/Xu4PP5q.png" alt="Twitch" /></a></li>
-                      <li><a href="https://www.youtube.com/@ausr_krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/p2mZqn2.png" alt="YouTube" /></a></li>
-                      <li><a href="https://kick.com/ausr-krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/lGkqaiQ.png" alt="Kick" /></a></li>
-                      <li><a href="https://discord.gg/QUkEEvb" target="_blank" rel="noopener"><img src="https://i.imgur.com/I9SnGIm.png" alt="Discord" /></a></li>
-                      <li><a href="https://twitter.com/AUSr_Krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/WBk7pdm.png" alt="Twitter" /></a></li>
-                      <li><a href="https://www.instagram.com/ausr_krip/" target="_blank" rel="noopener"><img src="https://i.imgur.com/CFN2e4a.png" alt="Instagram" /></a></li>
-                      <li><a href="https://www.tiktok.com/@ausr.krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/ClWjLFy.png" alt="TikTok" /></a></li>
-                      <li><a href="https://streamlabs.com/ausr_krip/tip" target="_blank" rel="noopener"><img src="https://i.imgur.com/PIHZ6pt.png" alt="Donate" /></a></li>
+                      <li><a href="https://www.twitch.tv/ausr_krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/Xu4PP5q.png" alt="Twitch"/></a></li>
+                      <li><a href="https://www.youtube.com/@ausr_krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/p2mZqn2.png" alt="YouTube"/></a></li>
+                      <li><a href="https://kick.com/ausr-krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/lGkqaiQ.png" alt="Kick"/></a></li>
+                      <li><a href="https://discord.gg/QUkEEvb" target="_blank" rel="noopener"><img src="https://i.imgur.com/I9SnGIm.png" alt="Discord"/></a></li>
+                      <li><a href="https://twitter.com/AUSr_Krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/WBk7pdm.png" alt="Twitter"/></a></li>
+                      <li><a href="https://www.instagram.com/ausr_krip/" target="_blank" rel="noopener"><img src="https://i.imgur.com/CFN2e4a.png" alt="Instagram"/></a></li>
+                      <li><a href="https://www.tiktok.com/@ausr.krip" target="_blank" rel="noopener"><img src="https://i.imgur.com/ClWjLFy.png" alt="TikTok"/></a></li>
+                      <li><a href="https://streamlabs.com/ausr_krip/tip" target="_blank" rel="noopener"><img src="https://i.imgur.com/PIHZ6pt.png" alt="Donate"/></a></li>
                     </ul>
                   </div>
                 </nav>
@@ -50,52 +50,51 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script>
-        // Page init: remove preload and reveal header
+    <!-- Clip cycling logic -->
+    <script defer>
         window.addEventListener('load', () => {
+            // Remove preload and animate header in
             document.body.classList.remove('is-preload');
             const header = document.getElementById('header');
-            header.style.transform = 'none';
             header.style.opacity = '1';
-            header.style.visibility = 'visible';
+            header.style.transform = 'translateY(0)';
         });
         window.ontouchmove = () => false;
         window.onorientationchange = () => { document.body.scrollTop = 0; };
 
         // Clips and durations
-        const clips = [
-            'AmorphousAuspiciousBobaSwiftRage--MnKyZCm3tgzaRIz',
-            'BetterPhilanthropicPlumBibleThump-w0OeOeYxo28j4I3g',
-            'HomelyFitCrabsFloof-IINFByBoR5T5H28C',
-            'VenomousSullenWebDancingBaby-synaD3SGD0TzsGXE',
-            'FreezingOutstandingStrawberryPastaThat-h4YHJ6OjupMREqXy',
-            'RacyAverageCarabeefOpieOP-RLnPc9CjVTitwDbd'
-        ];
-        const durations = [6, 30, 30, 13, 24, 30];
+        const clips = ['AmorphousAuspiciousBobaSwiftRage--MnKyZCm3tgzaRIz',
+                       'BetterPhilanthropicPlumBibleThump-w0OeOeYxo28j4I3g',
+                       'HomelyFitCrabsFloof-IINFByBoR5T5H28C',
+                       'VenomousSullenWebDancingBaby-synaD3SGD0TzsGXE',
+                       'FreezingOutstandingStrawberryPastaThat-h4YHJ6OjupMREqXy',
+                       'RacyAverageCarabeefOpieOP-RLnPc9CjVTitwDbd'];
+        const durations = [6,30,30,13,24,30];
         let idx = 0;
 
-        // Render clip
         function renderClip(slug) {
             const container = document.getElementById('twitch-clip-container');
             container.innerHTML = '';
-            new Twitch.Embed('twitch-clip-container', {
-                width: 320,
-                height: 180,
-                clip: slug,
-                autoplay: true,
-                muted: true,
-                parent: ['onlybeards.vip']
-            });
+            if (window.Twitch && Twitch.Embed) {
+                new Twitch.Embed('twitch-clip-container', {
+                    width: 320,
+                    height: 180,
+                    clip: slug,
+                    autoplay: true,
+                    muted: true,
+                    parent: ['onlybeards.vip']
+                });
+            } else {
+                console.error('Twitch Embed script not loaded');
+            }
         }
 
-        // Cycle through clips
         function cycleClips() {
             renderClip(clips[idx]);
             setTimeout(() => {
                 idx = (idx + 1) % clips.length;
                 cycleClips();
-            }, durations[idx] * 1000);
+            }, durations[idx]*1000);
         }
         cycleClips();
     </script>
