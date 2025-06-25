@@ -1,153 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AUSr_Krip</title>
-  <style>
-    /* Reset CSS */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>AUSr_Krip</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<div id="wrapper">
+			<div id="bg"></div>
+			<div id="overlay"></div>
+			<div id="main">
 
-    /* Body Styles */
-    body {
-      font-family: 'Avenir Next LT Pro', sans-serif;
-      background-image: url('https://i.imgur.com/AuoKZKw.png');
-      color: #00ff00; /* Fluorescent green text color */
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
+				<!-- Header -->
+					<header id="header">
+						<img src="https://i.imgur.com/Mny9wDW.png" alt="Header Image">
+						<p> &nbsp;&bull;&nbsp; Aussie Riders &nbsp;&bull;&nbsp; </p>
+						
+        <nav>
+          <div class="container">
+            <ul>
+              <li>
+                <a href="https://www.twitch.tv/ausr_krip" target="_blank" rel="noopener">
+                  <img src="https://i.imgur.com/Xu4PP5q.png" alt="Twitch">
+                </a>
+              </li>
+              <li>
+                <a href="https://www.youtube.com/@ausr_krip" target="_blank" rel="noopener">
+                  <img src="https://i.imgur.com/p2mZqn2.png" alt="YouTube">
+                </a>
+              </li>
+              <li>
+                <a href="https://kick.com/ausr-krip" target="_blank" rel="noopener">
+                  <img src="https://i.imgur.com/lGkqaiQ.png" alt="Kick">
+                </a>
+              </li>
+              <li>
+                <a href="https://discord.gg/QUkEEvb" target="_blank" rel="noopener">
+                  <img src="https://i.imgur.com/I9SnGIm.png" alt="Discord">
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/AUSr_Krip" target="_blank" rel="noopener">
+                  <img src="https://i.imgur.com/WBk7pdm.png" alt="X (Twitter)">
+                </a>
+              </li>
+              <li>
+                <a href="https://www.instagram.com/ausr_krip/" target="_blank" rel="noopener">
+                  <img src="https://i.imgur.com/CFN2e4a.png" alt="Instagram">
+                </a>
+              </li>
+              <li>
+                <a href="https://www.tiktok.com/@ausr.krip" target="_blank" rel="noopener">
+                  <img src="https://i.imgur.com/ClWjLFy.png" alt="TikTok">
+                </a>
+              </li>
+              <li>
+                <a href="https://streamlabs.com/ausr_krip/tip" target="_blank" rel="noopener">
+                  <img src="https://i.imgur.com/PIHZ6pt.png" alt="Donate">
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
 
-    /* Header Styles */
-    header {
-      background-image: url('https://i.imgur.com/AuoKZKw.png');
-      padding: 20px;
-      text-align: center;
-    }
-
-    /* Main Content Styles */
-    .container {
-      padding: 20px;
-      text-align: center; /* Center align content */
-    }
-
-    /* Section Title Styles */
-    h2 {
-      color: #00ff00; /* Fluorescent green text color */
-      text-shadow: 2px 2px #800080; /* Purple drop shadow */
-      cursor: pointer; /* Change cursor to pointer */
-      text-decoration: underline; /* Add underline effect */
-      margin-bottom: 20px; /* Add space between buttons */
-    }
-
-    h2:hover {
-      color: #8423ff; /* Change text color on hover */
-    }
-
-    /* Side Images Styles */
-    .side-image {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 350px; /* Adjust width as needed */
-      margin-top: auto;
-      margin-bottom: auto;
-    }
-
-    .left-image {
-      left: 0;
-    }
-
-    .right-image {
-      right: 0;
-    }
-
-        /* Media Queries for Mobile */
-    @media screen and (max-width: 768px) {
-      .container {
-        padding: 10px; /* Adjust padding for smaller screens */
-      }
-
-      header {
-        padding: 10px; /* Adjust padding for smaller screens */
-      }
-
-      .side-image {
-        display: none; /* Hide side images on smaller screens */
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Left Side Image -->
-  <img src="https://i.imgur.com/1swWgaJ.gif" alt="Left Side Image" class="side-image left-image">
-
-  <!-- Header -->
-  <header>
-    <img src="https://i.imgur.com/Mny9wDW.png" alt="Header Image">
-  </header>
-
-  <!-- Main Content -->
-  <div class="container">
-  <section id="Twitch">
-    <a href="https://www.twitch.tv/ausr_krip" target="_blank">
-      <img src="https://i.imgur.com/Xu4PP5q.png" alt="Twitch Image">
-    </a>
-  </section>
-
-  <section id="YouTube">
-    <a href="https://www.youtube.com/@ausr_krip" target="_blank">
-      <img src="https://i.imgur.com/p2mZqn2.png" alt="YouTube Image">
-    </a>
-  </section>
-
-  <section id="Kick">
-    <a href="https://kick.com/ausr-krip" target="_blank">
-      <img src="https://i.imgur.com/lGkqaiQ.png" alt="Kick Image">
-    </a>
-  </section>
-
-  <section id="Discord">
-    <a href="https://discord.gg/QUkEEvb" target="_blank">
-      <img src="https://i.imgur.com/I9SnGIm.png" alt="Discord Image">
-    </a>
-  </section>
-
-  <section id="X">
-    <a href="https://twitter.com/AUSr_Krip" target="_blank">
-      <img src="https://i.imgur.com/WBk7pdm.png" alt="Twitter Image">
-    </a>
-  </section>
-
-  <section id="Instagram">
-    <a href="https://www.instagram.com/ausr_krip/" target="_blank">
-      <img src="https://i.imgur.com/CFN2e4a.png" alt="Instagram Image">
-    </a>
-  </section>
-
-  <section id="TikTok">
-    <a href="https://www.tiktok.com/@ausr.krip" target="_blank">
-      <img src="https://i.imgur.com/ClWjLFy.png" alt="TikTok Image">
-    </a>
-  </section>
-
-  <section id="Donate">
-    <a href="https://streamlabs.com/ausr_krip/tip" target="_blank">
-      <img src="https://i.imgur.com/PIHZ6pt.png" alt="Donate Image">
-    </a>
-  </section>
-</div>
-
-  <!-- Right Side Image -->
-  <img src="https://i.imgur.com/55sGQCD.gif" alt="Right Side Image" class="side-image right-image">
-
-  <!-- Footer -->
-  <footer>
-  </footer>
-
-</body>
+					</header>
+			</div>
+		</div>
+		<script>
+			window.onload = function() { document.body.classList.remove('is-preload'); }
+			window.ontouchmove = function() { return false; }
+			window.onorientationchange = function() { document.body.scrollTop = 0; }
+		</script>
+	</body>
 </html>
