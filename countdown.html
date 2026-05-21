@@ -45,7 +45,7 @@
     padding: 40px 40px 260px;
     position: relative;
     z-index: 2;
-    transform: scale(0.7);
+    transform: scale(0.9);
     transform-origin: top center;
   }
 
@@ -125,6 +125,45 @@
 
     to {
       transform: scale(1.06);
+    }
+  }
+
+  @media (max-height: 1100px) and (min-width: 769px) {
+    .container {
+      padding: 28px 32px 210px;
+      transform: scale(0.78);
+      transform-origin: top center;
+    }
+
+    .profile-pic {
+      width: min(260px, 24vw);
+      margin-top: 20px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin-bottom: 22px;
+    }
+
+    .subathon-line {
+      margin-top: 10px;
+    }
+
+    #countdown {
+      font-size: clamp(58px, 5.8vw, 110px);
+      line-height: 1;
+    }
+
+    .subtitle {
+      margin-top: 16px;
+      font-size: clamp(18px, 1.6vw, 30px);
+    }
+
+    .bottom-banner {
+      left: 16px;
+      right: 16px;
+      bottom: 12px;
+      width: calc(100vw - 32px);
     }
   }
 
