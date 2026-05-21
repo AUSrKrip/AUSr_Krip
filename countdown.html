@@ -119,6 +119,68 @@
       transform: scale(1.06);
     }
   }
+
+  @media (max-width: 768px) {
+    html,
+    body {
+      overflow: auto;
+      min-height: 100%;
+    }
+
+    body {
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+
+    .container {
+      height: auto;
+      min-height: 100vh;
+      justify-content: flex-start;
+      padding: 24px 18px 180px;
+      transform: none;
+      transform-origin: center top;
+    }
+
+    .profile-pic {
+      width: min(260px, 78vw);
+      margin-top: 20px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 9vw, 56px);
+      margin-bottom: 22px;
+      line-height: 1.08;
+    }
+
+    .subathon-line {
+      margin-top: 8px;
+      font-size: 0.6em;
+      letter-spacing: 3px;
+    }
+
+    #countdown {
+      font-size: clamp(42px, 11vw, 72px);
+      line-height: 1.05;
+    }
+
+    #finished {
+      font-size: clamp(52px, 13vw, 90px);
+    }
+
+    .subtitle {
+      margin-top: 18px;
+      font-size: clamp(18px, 4.6vw, 28px);
+      letter-spacing: 1px;
+    }
+
+    .bottom-banner {
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      width: calc(100vw - 20px);
+    }
+  }
 </style>
 </head>
 
@@ -133,7 +195,8 @@
   />
 
   <h1>
-    🎉 10 YEARS ON TWITCH 🎉
+    🎉 10 YEARS ON<br>
+    TWITCH 🎉
     <span class="subathon-line">SUBATHON</span>
   </h1>
 
