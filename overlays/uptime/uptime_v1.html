@@ -6,16 +6,6 @@
   <title>Twitch Uptime</title>
 
   <style>
-    :root {
-      --background: #0b8fe8;
-      --text: #ffffff;
-      --shadow: rgba(0, 0, 0, 0.22);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
     html,
     body {
       width: 100%;
@@ -23,73 +13,134 @@
       margin: 0;
       overflow: hidden;
       background: transparent;
-      font-family: Arial, Helvetica, sans-serif;
     }
 
-    #uptime-wrap {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 260px;
-      height: 60px;
-      padding: 0 14px;
-      background: var(--background);
-      color: var(--text);
-      font-size: 34px;
+    #uptime {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 42px;
       font-weight: 800;
       line-height: 1;
       letter-spacing: 1px;
-      text-shadow: 0 2px 3px var(--shadow);
+      text-shadow:
+        2px 2px 3px rgba(0, 0, 0, 0.9),
+        -1px -1px 2px rgba(0, 0, 0, 0.6);
+      white-space: nowrap;
     }
   </style>
 </head>
 
 <body>
-  <div id="uptime-wrap">
-    <span id="uptime">Loading...</span>
-  </div>
+  <div id="uptime">00:00:00</div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
 
     const username = (params.get("username") || "").trim().toLowerCase();
-    const backgroundColour = params.get("bg") || "#0b8fe8";
-    const textColour = params.get("color") || "#ffffff";
-    const configuredFontSize = Number.parseInt(params.get("size") || "34", 10);
-
-    const fontSize = Number.isFinite(configuredFontSize)
-      ? Math.min(120, Math.max(12, configuredFontSize))
-      : 34;
-
-    const uptimeWrap = document.getElementById("uptime-wrap");
     const uptimeElement = document.getElementById("uptime");
 
-    document.documentElement.style.setProperty("--background", backgroundColour);
-    document.documentElement.style.setProperty("--text", textColour);
-    uptimeWrap.style.fontSize = `${fontSize}px`;
+    let displayedSeconds = null;
+    let secondTimer = null;
 
-    function showMessage(message) {
-      uptimeElement.textContent = message;
+    function formatTime(totalSeconds) {
+      const safeSeconds = Math.max(0, Math.floor(totalSeconds));
+
+      const hours = Math.floor(safeSeconds / 3600);
+      const minutes = Math.floor((safeSeconds % 3600) / 60);
+      const seconds = safeSeconds % 60;
+
+      return [
+        String(hours).padStart(2, "0"),
+        String(minutes).padStart(2, "0"),
+        String(seconds).padStart(2, "0")
+      ].join(":");
     }
 
-    async function updateUptime() {
+    function render() {
+      if (displayedSeconds === null) {
+        uptimeElement.textContent = "00:00:00";
+        return;
+      }
+
+      uptimeElement.textContent = formatTime(displayedSeconds);
+    }
+
+    function parseDecapiUptime(text) {
+      const value = text.trim().toLowerCase();
+
+      if (
+        !value ||
+        value.includes("offline") ||
+        value.includes("not live") ||
+        value.includes("not streaming") ||
+        value.includes("error")
+      ) {
+        return null;
+      }
+
+      let total = 0;
+      let foundValue = false;
+
+      const days = value.match(/(\d+)\s*(?:day|days)/);
+      const hours = value.match(/(\d+)\s*(?:hour|hours|hr|hrs)/);
+      const minutes = value.match(/(\d+)\s*(?:minute|minutes|min|mins)/);
+      const seconds = value.match(/(\d+)\s*(?:second|seconds|sec|secs)/);
+
+      if (days) {
+        total += Number(days[1]) * 86400;
+        foundValue = true;
+      }
+
+      if (hours) {
+        total += Number(hours[1]) * 3600;
+        foundValue = true;
+      }
+
+      if (minutes) {
+        total += Number(minutes[1]) * 60;
+        foundValue = true;
+      }
+
+      if (seconds) {
+        total += Number(seconds[1]);
+        foundValue = true;
+      }
+
+      return foundValue ? total : null;
+    }
+
+    function startLiveCounter() {
+      if (secondTimer) {
+        return;
+      }
+
+      secondTimer = setInterval(() => {
+        if (displayedSeconds === null) {
+          return;
+        }
+
+        displayedSeconds += 1;
+        render();
+      }, 1000);
+    }
+
+    async function syncWithDecapi() {
       if (!username) {
-        showMessage("NO USERNAME");
+        console.error("Missing username. Use ?username=yourtwitchname");
+        displayedSeconds = null;
+        render();
         return;
       }
 
       try {
-        /*
-          DecAPI returns plain text, such as:
-          "1 hour 14 minutes 38 seconds"
+        const url =
+          `https://decapi.me/twitch/uptime?channel=${encodeURIComponent(username)}` +
+          `&offline_msg=OFFLINE`;
 
-          If the channel is offline, DecAPI generally returns a text response
-          indicating that the stream is not live.
-        */
-        const endpoint =
-          `https://decapi.me/twitch/uptime?channel=${encodeURIComponent(username)}`;
-
-        const response = await fetch(endpoint, {
+        const response = await fetch(url, {
           cache: "no-store"
         });
 
@@ -97,31 +148,38 @@
           throw new Error(`DecAPI returned HTTP ${response.status}`);
         }
 
-        const uptimeText = (await response.text()).trim();
+        const text = await response.text();
+        const uptimeInSeconds = parseDecapiUptime(text);
 
-        if (
-          !uptimeText ||
-          /offline|not live|not streaming|error/i.test(uptimeText)
-        ) {
-          showMessage("OFFLINE");
+        if (uptimeInSeconds === null) {
+          displayedSeconds = null;
+          render();
           return;
         }
 
-        showMessage(uptimeText);
+        displayedSeconds = uptimeInSeconds;
+        render();
+        startLiveCounter();
       } catch (error) {
-        console.error("Could not load Twitch uptime from DecAPI:", error);
-        showMessage("UPTIME ERROR");
+        console.error("DecAPI uptime request failed:", error);
+
+        /*
+          Keep counting if DecAPI briefly fails after a successful response.
+          On first-load failure, it stays at 00:00:00.
+        */
+        if (displayedSeconds === null) {
+          render();
+        }
       }
     }
 
-    updateUptime();
+    syncWithDecapi();
 
     /*
-      DecAPI gives the current formatted text, so refresh it every 15 seconds.
-      Smaller values create needless requests and do not guarantee better
-      match with Twitch's own UI.
+      The visible timer increments locally every second.
+      This just corrects the value from DecAPI occasionally.
     */
-    setInterval(updateUptime, 15000);
+    setInterval(syncWithDecapi, 30000);
   </script>
 </body>
 </html>
