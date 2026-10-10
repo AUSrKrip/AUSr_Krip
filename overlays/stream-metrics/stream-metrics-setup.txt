@@ -1,0 +1,21 @@
+STREAM STATS OVERLAY - SETUP
+============================
+
+This overlay displays Twitch subscriber, follower and viewer counts.
+
+AUTHORISE SUBSCRIBER COUNT
+--------------------------
+1. Sign in to Twitch as the broadcaster whose subscriber count you want to display.
+2. Open this DecAPI authorisation link in your normal browser:
+   https://decapi.me/auth/twitch?redirect=subcount&scopes=channel:read:subscriptions+user:read:email+moderator:read:followers+user:read:email
+3. Review the permissions Twitch shows you. Approve only if you are comfortable with them.
+
+ADD TO OBS
+----------
+Simply add a new browser source in OBS Studio.
+Paste in the URL:
+https://onlybeards.vip/overlays/stream-stats.html?username=ausr_krip
+
+(Replace “ausr_krip” with your Twitch username.)
+
+Viewer count may be zero or unavailable when the stream is offline.

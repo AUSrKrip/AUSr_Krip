@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    #statsWrap {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 100px;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: left;
+      line-height: 1.2;
+    }
+
+    .line {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      white-space: nowrap;
+      margin: 0;
+      padding: 0;
+      opacity: 0;
+      transition: opacity 120ms linear;
+    }
+
+    .statIcon {
+      display: block;
+      width: auto;
+      height: 1em;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .statValue {
+      display: inline-block;
+      min-width: 220px;
+    }
+
+    .warn-yellow { color: #ffd60a; }
+    .warn-red { color: #ff3b30; }
+  </style>
+</head>
+<body>
+
+<div id="statsWrap">
+  <div class="line" id="fps">FPS --</div>
+  <div class="line" id="rf"><img class="statIcon" src="images/summary.png" alt="Render time"><span id="rfValue" class="statValue">-- ms</span></div>
+  <div class="line" id="rl"><img class="statIcon" src="images/rendering.png" alt="Render lag"><span id="rlValue" class="statValue">0.0%</span></div>
+  <div class="line" id="el"><img class="statIcon" src="images/encoding.png" alt="Encode lag"><span id="elValue" class="statValue">0.0%</span></div>
+  <div class="line" id="df"><img class="statIcon" src="images/network.png" alt="Network drop"><span id="dfValue" class="statValue">0.0%</span></div>
+</div>
+
+<script>
+  const obsHost = 'localhost';
+  const obsPort = 4455;
+  const TEST_MODE = false;
+
+  const RF_YELLOW_MS = 2.5;
+  const RF_RED_MS = 5.0;
+  const PCT_YELLOW = 0.2;
+  const PCT_RED = 0.5;
+  const FPS_YELLOW = 55;
+  const FPS_RED = 45;
+  const HIDE_DELAY_MS = 1500;
+
+  const ws = new WebSocket(`ws://${obsHost}:${obsPort}`);
+
+  const els = {
+    fps: document.getElementById('fps'),
+    rf: document.getElementById('rf'),
+    rl: document.getElementById('rl'),
+    el: document.getElementById('el'),
+    df: document.getElementById('df'),
+    rfValue: document.getElementById('rfValue'),
+    rlValue: document.getElementById('rlValue'),
+    elValue: document.getElementById('elValue'),
+    dfValue: document.getElementById('dfValue'),
+  };
+
+  const ui = {
+    fps: { warn:false, hideAt:0 },
+    rf: { warn:false, hideAt:0 },
+    rl: { warn:false, hideAt:0 },
+    el: { warn:false, hideAt:0 },
+    df: { warn:false, hideAt:0 },
+  };
+
+  let latest = {
+    fps: null,
+    rf: null,
+    rlPct: 0,
+    elPct: 0,
+    dfPct: 0
+  };
+
+  function send(type, id) {
+    ws.send(JSON.stringify({ op: 6, d: { requestType: type, requestId: id } }));
+  }
+
+  function clearColours(el) {
+    el.classList.remove('warn-yellow', 'warn-red');
+  }
+
+  function setColour(el, level) {
+    clearColours(el);
+    if (level === 'yellow') el.classList.add('warn-yellow');
+    if (level === 'red') el.classList.add('warn-red');
+  }
+
+  function setVisible(el, visible) {
+    el.style.opacity = visible ? '1' : '0';
+  }
+
+  function updateLine(key, valueText, warnNow, colourLevel) {
+    const s = ui[key];
+    const el = els[key];
+    const valEl = els[key + 'Value'];
+    const now = Date.now();
+
+    if (TEST_MODE) {
+      setVisible(el, true);
+      setColour(el, 'red');
+      if (valEl) valEl.textContent = valueText;
+      return;
+    }
+
+    if (s.warn && !warnNow) s.hideAt = now + HIDE_DELAY_MS;
+    if (!s.warn && warnNow) s.hideAt = 0;
+
+    s.warn = warnNow;
+
+    const shouldBeVisible = warnNow || (s.hideAt && now < s.hideAt);
+
+    setVisible(el, shouldBeVisible);
+    setColour(el, colourLevel);
+    if (valEl) valEl.textContent = valueText;
+  }
+
+  function updateFps(valueText, warnNow, colourLevel) {
+    const s = ui.fps;
+    const el = els.fps;
+    const now = Date.now();
+
+    if (TEST_MODE) {
+      setVisible(el, true);
+      setColour(el, 'red');
+      el.textContent = valueText;
+      return;
+    }
+
+    if (s.warn && !warnNow) s.hideAt = now + HIDE_DELAY_MS;
+    if (!s.warn && warnNow) s.hideAt = 0;
+
+    s.warn = warnNow;
+
+    const shouldBeVisible = warnNow || (s.hideAt && now < s.hideAt);
+
+    setVisible(el, shouldBeVisible);
+    setColour(el, colourLevel);
+    el.textContent = valueText;
+  }
+
+  function levelFromMs(ms, yellowMs, redMs) {
+    if (ms == null) return 'white';
+    if (ms > redMs) return 'red';
+    if (ms > yellowMs) return 'yellow';
+    return 'white';
+  }
+
+  function levelFromPct(pct, yellowPct, redPct) {
+    if (pct >= redPct) return 'red';
+    if (pct >= yellowPct) return 'yellow';
+    return 'white';
+  }
+
+  function levelFromFps(fps, yellowBelow, redBelow) {
+    if (fps == null) return 'white';
+    if (fps < redBelow) return 'red';
+    if (fps < yellowBelow) return 'yellow';
+    return 'white';
+  }
+
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      op: 1,
+      d: { rpcVersion: 1, authentication: '' }
+    }));
+  };
+
+  ws.onmessage = (event) => {
+    const msg = JSON.parse(event.data);
+
+    if (msg.op === 2) {
+      setInterval(() => {
+        send('GetStats', 'stats');
+        send('GetStreamStatus', 'stream');
+      }, 500);
+    }
+
+    if (msg.op === 7 && msg.d?.requestType === 'GetStats') {
+      const d = msg.d.responseData || {};
+
+      latest.fps = d.activeFps != null ? Number(d.activeFps) : null;
+      latest.rf = d.averageFrameRenderTime != null ? Number(d.averageFrameRenderTime) : null;
+
+      const rSkip = Number(d.renderSkippedFrames ?? 0);
+      const rTot = Number(d.renderTotalFrames ?? 0);
+      latest.rlPct = rTot > 0 ? (rSkip / rTot) * 100 : 0;
+
+      const eSkip = Number(d.outputSkippedFrames ?? 0);
+      const eTot = Number(d.outputTotalFrames ?? 0);
+      latest.elPct = eTot > 0 ? (eSkip / eTot) * 100 : 0;
+
+      const fpsLevel = levelFromFps(latest.fps, FPS_YELLOW, FPS_RED);
+      const rfLevel = levelFromMs(latest.rf, RF_YELLOW_MS, RF_RED_MS);
+      const rlLevel = levelFromPct(latest.rlPct, PCT_YELLOW, PCT_RED);
+      const elLevel = levelFromPct(latest.elPct, PCT_YELLOW, PCT_RED);
+
+      updateFps(`FPS ${latest.fps != null ? latest.fps.toFixed(2) : '--'}`, fpsLevel !== 'white', fpsLevel);
+      updateLine('rf', latest.rf != null ? latest.rf.toFixed(1) + ' ms' : '-- ms', rfLevel !== 'white', rfLevel);
+      updateLine('rl', latest.rlPct.toFixed(1) + '%', rlLevel !== 'white', rlLevel);
+      updateLine('el', latest.elPct.toFixed(1) + '%', elLevel !== 'white', elLevel);
+    }
+
+    if (msg.op === 7 && msg.d?.requestType === 'GetStreamStatus') {
+      const d = msg.d.responseData || {};
+
+      if (d.outputActive) {
+        const nDrop = Number(d.outputSkippedFrames ?? 0);
+        const nTot = Number(d.outputTotalFrames ?? 0);
+        latest.dfPct = nTot > 0 ? (nDrop / nTot) * 100 : 0;
+      } else {
+        latest.dfPct = 0;
+      }
+
+      const dfLevel = levelFromPct(latest.dfPct, PCT_YELLOW, PCT_RED);
+
+      updateLine('df', latest.dfPct.toFixed(1) + '%', dfLevel !== 'white', dfLevel);
+    }
+  };
+
+  ws.onerror = ws.onclose = () => {
+    Object.values(els).forEach(el => {
+      setVisible(el, false);
+      clearColours(el);
+    });
+  };
+</script>
+
+</body>
+</html>
