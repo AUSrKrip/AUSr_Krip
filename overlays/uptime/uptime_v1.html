@@ -11,23 +11,25 @@
       width: 100%;
       height: 100%;
       margin: 0;
+      padding: 0;
       overflow: hidden;
-      background: transparent;
+      background: transparent !important;
     }
 
     #uptime {
       display: inline-block;
       margin: 0;
       padding: 0;
+      background: transparent !important;
       color: #ffffff;
       font-family: Arial, Helvetica, sans-serif;
       font-size: 42px;
       font-weight: 800;
       line-height: 1;
       letter-spacing: 1px;
-      text-shadow:
-        2px 2px 3px rgba(0, 0, 0, 0.9),
-        -1px -1px 2px rgba(0, 0, 0, 0.6);
+      text-shadow: none !important;
+      filter: none !important;
+      box-shadow: none !important;
       white-space: nowrap;
     }
   </style>
@@ -41,6 +43,15 @@
 
     const username = (params.get("username") || "").trim().toLowerCase();
     const uptimeElement = document.getElementById("uptime");
+
+    /*
+      DecAPI's recorded stream start is currently 14 seconds later than
+      Twitch's on-page timer for your channel.
+
+      Change this to 0 if it ever matches naturally.
+      Change it to 13, 14, 15, etc. if Twitch's timer differs later.
+    */
+    const OFFSET_SECONDS = 14;
 
     let displayedSeconds = null;
     let secondTimer = null;
@@ -60,12 +71,10 @@
     }
 
     function render() {
-      if (displayedSeconds === null) {
-        uptimeElement.textContent = "00:00:00";
-        return;
-      }
-
-      uptimeElement.textContent = formatTime(displayedSeconds);
+      uptimeElement.textContent =
+        displayedSeconds === null
+          ? "00:00:00"
+          : formatTime(displayedSeconds);
     }
 
     function parseDecapiUptime(text) {
@@ -112,7 +121,7 @@
       return foundValue ? total : null;
     }
 
-    function startLiveCounter() {
+    function startCounter() {
       if (secondTimer) {
         return;
       }
@@ -129,18 +138,18 @@
 
     async function syncWithDecapi() {
       if (!username) {
-        console.error("Missing username. Use ?username=yourtwitchname");
+        console.error("Add a Twitch username: ?username=lookwhotalkin");
         displayedSeconds = null;
         render();
         return;
       }
 
       try {
-        const url =
+        const endpoint =
           `https://decapi.me/twitch/uptime?channel=${encodeURIComponent(username)}` +
           `&offline_msg=OFFLINE`;
 
-        const response = await fetch(url, {
+        const response = await fetch(endpoint, {
           cache: "no-store"
         });
 
@@ -148,25 +157,21 @@
           throw new Error(`DecAPI returned HTTP ${response.status}`);
         }
 
-        const text = await response.text();
-        const uptimeInSeconds = parseDecapiUptime(text);
+        const returnedText = await response.text();
+        const decapiSeconds = parseDecapiUptime(returnedText);
 
-        if (uptimeInSeconds === null) {
+        if (decapiSeconds === null) {
           displayedSeconds = null;
           render();
           return;
         }
 
-        displayedSeconds = uptimeInSeconds;
+        displayedSeconds = decapiSeconds + OFFSET_SECONDS;
         render();
-        startLiveCounter();
+        startCounter();
       } catch (error) {
-        console.error("DecAPI uptime request failed:", error);
+        console.error("Unable to update DecAPI uptime:", error);
 
-        /*
-          Keep counting if DecAPI briefly fails after a successful response.
-          On first-load failure, it stays at 00:00:00.
-        */
         if (displayedSeconds === null) {
           render();
         }
@@ -176,8 +181,8 @@
     syncWithDecapi();
 
     /*
-      The visible timer increments locally every second.
-      This just corrects the value from DecAPI occasionally.
+      The timer itself updates each second.
+      DecAPI is only used to re-check/correct it every 30 seconds.
     */
     setInterval(syncWithDecapi, 30000);
   </script>
