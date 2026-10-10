@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Twitch Uptime</title>
+
+  <style>
+    :root {
+      --background: #0b8fe8;
+      --text: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: transparent;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #uptime-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 260px;
+      height: 60px;
+      padding: 0 14px;
+      background: var(--background);
+      color: var(--text);
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 3px var(--shadow);
+    }
+
+    #uptime-wrap.offline {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="uptime-wrap" class="offline">
+    <span id="uptime">00:00:00</span>
+  </div>
+
+  <script>
+    /*
+      Required query parameter:
+      ?username=lookwhotalkin
+
+      Optional styling examples:
+      ?username=lookwhotalkin&bg=%230b8fe8&color=%23ffffff&size=34
+    */
+
+    const params = new URLSearchParams(window.location.search);
+
+    const username = (params.get("username") || "").trim().toLowerCase();
+    const backgroundColour = params.get("bg") || "#0b8fe8";
+    const textColour = params.get("color") || "#ffffff";
+    const fontSize = Math.min(
+      120,
+      Math.max(12, Number.parseInt(params.get("size") || "34", 10) || 34)
+    );
+
+    const uptimeWrap = document.getElementById("uptime-wrap");
+    const uptimeElement = document.getElementById("uptime");
+
+    document.documentElement.style.setProperty("--background", backgroundColour);
+    document.documentElement.style.setProperty("--text", textColour);
+    uptimeWrap.style.fontSize = `${fontSize}px`;
+
+    let startedAtMs = null;
+    let uptimeTimer = null;
+    let pollTimer = null;
+
+    function formatDuration(totalSeconds) {
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      return [
+        String(hours).padStart(2, "0"),
+        String(minutes).padStart(2, "0"),
+        String(seconds).padStart(2, "0")
+      ].join(":");
+    }
+
+    function drawUptime() {
+      if (!startedAtMs) {
+        return;
+      }
+
+      const secondsLive = Math.max(
+        0,
+        Math.floor((Date.now() - startedAtMs) / 1000)
+      );
+
+      uptimeElement.textContent = formatDuration(secondsLive);
+    }
+
+    function showOffline() {
+      startedAtMs = null;
+      uptimeWrap.classList.add("offline");
+
+      if (uptimeTimer) {
+        clearInterval(uptimeTimer);
+        uptimeTimer = null;
+      }
+    }
+
+    function showLive(startedAt) {
+      const parsedStartTime = new Date(startedAt).getTime();
+
+      if (Number.isNaN(parsedStartTime)) {
+        showOffline();
+        return;
+      }
+
+      startedAtMs = parsedStartTime;
+      uptimeWrap.classList.remove("offline");
+
+      drawUptime();
+
+      if (!uptimeTimer) {
+        uptimeTimer = setInterval(drawUptime, 1000);
+      }
+    }
+
+    async function getStreamUptime() {
+      if (!username) {
+        console.error("Twitch Uptime Overlay: Add ?username=your_twitch_name to the URL.");
+        showOffline();
+        return;
+      }
+
+      try {
+        /*
+          This expects your endpoint to return a Twitch Helix-style response:
+
+          {
+            "data": [
+              {
+                "type": "live",
+                "started_at": "2026-10-10T12:34:56Z"
+              }
+            ]
+          }
+
+          Replace the URL below only if your current overlay uses a different
+          Twitch/API proxy endpoint.
+        */
+        const response = await fetch(
+          `/api/twitch/stream?username=${encodeURIComponent(username)}`,
+          {
+            cache: "no-store"
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+        const stream = Array.isArray(result.data) ? result.data[0] : null;
+
+        if (!stream || stream.type !== "live" || !stream.started_at) {
+          showOffline();
+          return;
+        }
+
+        showLive(stream.started_at);
+      } catch (error) {
+        console.error("Twitch Uptime Overlay: Could not fetch stream status.", error);
+
+        /*
+          Do not immediately hide an already-running timer if there is a
+          temporary API/network issue. It will retry on the next poll.
+        */
+        if (!startedAtMs) {
+          showOffline();
+        }
+      }
+    }
+
+    getStreamUptime();
+
+    /*
+      Re-check Twitch every 30 seconds so the overlay:
+      - appears once the channel goes live
+      - disappears after the stream ends
+      - recovers from brief API/network errors
+    */
+    pollTimer = setInterval(getStreamUptime, 30000);
+  </script>
+</body>
+</html>
