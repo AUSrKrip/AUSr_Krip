@@ -16,7 +16,7 @@
 <body>
   <span id="uptime">Loading…</span>
   <script>
-    const OFFSET_SECONDS = 14;
+    const OFFSET_SECONDS = 15;
     const channel = (new URLSearchParams(location.search).get('username') || 'ausr_krip').trim().replace(/^@/, '');
     const display = document.getElementById('uptime');
     let uptimeAtSync = null;
