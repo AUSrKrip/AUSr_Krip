@@ -16,6 +16,7 @@
 <body>
   <span id="uptime">Loading…</span>
   <script>
+    const OFFSET_SECONDS = 14;
     const channel = (new URLSearchParams(location.search).get('username') || 'ausr_krip').trim().replace(/^@/, '');
     const display = document.getElementById('uptime');
     let uptimeAtSync = null;
@@ -64,7 +65,7 @@
         }
         const seconds = parseUptime(text);
         if (seconds === null) throw new Error(`Unknown uptime format: ${text}`);
-        uptimeAtSync = seconds;
+        uptimeAtSync = Math.max(0, seconds - OFFSET_SECONDS);
         syncedAt = Date.now();
         render();
       } catch (error) {
