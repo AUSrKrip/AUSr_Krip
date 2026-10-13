@@ -65,7 +65,7 @@
         }
         const seconds = parseUptime(text);
         if (seconds === null) throw new Error(`Unknown uptime format: ${text}`);
-        uptimeAtSync = Math.max(0, seconds - OFFSET_SECONDS);
+        uptimeAtSync = seconds + OFFSET_SECONDS;
         syncedAt = Date.now();
         render();
       } catch (error) {
