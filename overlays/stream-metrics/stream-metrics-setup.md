@@ -12,7 +12,7 @@ This overlay displays Twitch subscriber, follower and viewer counts.
 
 Simply add a new browser source in OBS Studio.
 Paste in the URL:
-https://onlybeards.vip/overlays/stream-stats.html?username=ausr_krip
+https://onlybeards.vip/overlays/stream-metrics/stream-metrics.html?username=ausr_krip
 
 (Replace “ausr_krip” with your Twitch username.)
 
